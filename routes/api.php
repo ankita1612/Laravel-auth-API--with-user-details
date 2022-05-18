@@ -23,7 +23,8 @@ Route::controller(RegisterController::class)->group(function(){
     Route::post('login', 'login');
 });
         
-Route::middleware('auth:sanctum')->group( function () {
-Route::get('list', [ProductController::class,'index']);
+Route::middleware('auth:sanctum')->group( function () {    
+    Route::get('user_detail', [RegisterController::class,'user_detail']);
+    Route::get('list', [ProductController::class,'index']);
     //Route::resource('products', ProductController::class);
 });

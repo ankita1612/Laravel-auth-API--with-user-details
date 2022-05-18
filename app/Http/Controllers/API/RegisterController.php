@@ -43,49 +43,52 @@ class RegisterController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function login(Request $request)
-    {           
-        $user_data=User::where(array("email"=>$request->email,"password"=>md5($request->password)))->first();           
+    {          
+        //DB::enableQueryLog();
+        $user_data=User::select("*","person_id AS id")->where(array("email"=>$request->email,"pass"=>md5($request->password)))->first();           
+        //$query=DB::getQueryLog();
+        // pr($query);    pr($user_data);exit;
         if($user_data)
         { 
             $user = $user_data;                             
             $success['token'] =  $user->createToken('MyApp')->plainTextToken; 
-            $success['name'] =  $user->name;   
+            //$success['name'] =  $user->name;   
             return $this->sendResponse($success, 'User login successfully.');
         } 
-        else{ 
+        else
+        { 
             return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
         } 
-    }
-        /**
+    } 
+     /**
      * Login api
      *
      * @return \Illuminate\Http\Response
      */
-    public function login_with_md5(Request $request)
-    {
-        echo "~>>".Auth::attempt(['email' => $request->email, 'password' => $request->password]);
-        $user = Auth::user();
-        echo "<pre>";
-        print_R($user);
-        exit;
-        // DB::enableQueryLog();
-        // $user = User::where('email', $request->email)->where('password',md5($request->password))->first();
-        // //Auth::login($user)
-        // $query=DB::getQueryLog();
-        // //print_R($query);
-        // print_R($user->toArray());
-        // exit;
-       
-
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
-            $user = Auth::user(); 
-            $success['token'] =  $user->createToken('MyApp')->plainTextToken; 
-            $success['name'] =  $user->name;
+    public function user_detail(Request $request)
+    {  
+        $validator = Validator::make($request->all(), [            
+            'person_id' => 'required',            
+        ]);
    
-            return $this->sendResponse($success, 'User login successfully.');
-        } 
-        else{ 
-            return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
-        } 
-    }
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors());       
+        }
+
+        $person_id=$request->person_id;
+        
+        DB::enableQueryLog();
+       
+        $user_data=User::where("person_id","=",$person_id)->get();           
+     //   pr($user_data);
+
+        $query=DB::getQueryLog();
+       //  pr($query);    pr($user_data->toArray());
+       //  exit;
+
+        $data['user_data'] = $user_data;                             
+            
+        return $this->sendResponse($data, 'User login successfully.');
+        
+    }    
 }
