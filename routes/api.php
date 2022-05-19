@@ -25,6 +25,8 @@ Route::controller(RegisterController::class)->group(function(){
         
 Route::middleware('auth:sanctum')->group( function () {    
     Route::get('user_detail', [RegisterController::class,'user_detail']);
+    Route::get('logout', [RegisterController::class,'logout']);
+    
     Route::get('list', [ProductController::class,'index']);
     //Route::resource('products', ProductController::class);
 });

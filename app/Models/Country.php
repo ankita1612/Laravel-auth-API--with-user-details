@@ -10,9 +10,9 @@ class Country extends Model
     use HasFactory;
     protected $table="country";
     protected $primaryKey = 'id';
-    public function state()
-    {
-        return $this->hasOne(State::class,'country_id','id')->with("address")->with("person_address");
-        //return $this->hasManyThrough('State::class', 'App\User');
-    }
+    // public function state()
+    // {
+    //     return $this->hasOne(State::class,'country_id','id')->with("address")->with("person_address");
+    //     //return $this->hasManyThrough('State::class', 'App\User');
+    // }
 }
