@@ -47,18 +47,25 @@ class RegisterController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function login(Request $request)
-    {          
-        $user_data=User::select("*")->where(array("email"=>$request->email,"pass"=>md5($request->password)))->first();                   
-        if($user_data)
-        { 
-            $user = $user_data;                             
-            $success['token'] =  $user->createToken('MyApp')->plainTextToken;            
-            return $this->sendResponse($success, 'User login successfully.');
+    {      
+        try
+        {     
+            $user_data=User::select("*")->where(array("email"=>$request->email,"pass"=>md5($request->password)))->first();                   
+            if($user_data)
+            { 
+                $user = $user_data;                             
+                $success['token'] =  $user->createToken('MyApp')->plainTextToken;            
+                return $this->sendResponse($success, 'User login successfully.');
+            } 
+            else
+            { 
+                return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
+            } 
         } 
-        else
-        { 
-            return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
-        } 
+        catch (\Exception $e) 
+        {
+            return $this->sendError($e->getMessage());
+        }      
     }
     /**
      * Function name : logout
@@ -68,8 +75,8 @@ class RegisterController extends BaseController
     {        
         try
         {
-            $request->user()->currentAccessToken()->delete();
-            return $this->sendResponse([], 'You are logged out successfully.');
+          //  $request->user()->currentAccessToken()->delete();
+            return $this->sendResponse('', 'You are logged out successfully.');
         
         } 
         catch (\Exception $e) 
