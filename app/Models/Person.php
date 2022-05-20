@@ -13,9 +13,4 @@ class Person extends Model
     protected $table="person";
     protected $primaryKey = 'person_id';
 
-    public function person_adress()
-    {
-        return $this->belongsToMany(Address::class,'person_address');
-        // OR return $this->hasOne('App\Phone');
-    }
 }

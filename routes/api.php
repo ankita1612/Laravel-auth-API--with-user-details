@@ -21,6 +21,9 @@ use App\Http\Controllers\API\ProductController;
 Route::controller(RegisterController::class)->group(function(){
     Route::post('register', 'register');
     Route::post('login', 'login');
+    Route::get('error_page', 'error_page')->name("error_page"); 
+    //Route::post('error_page', 'error_page')->name("error_page");
+    
 });
         
 Route::middleware('auth:sanctum')->group( function () {    
@@ -29,4 +32,9 @@ Route::middleware('auth:sanctum')->group( function () {
     
     Route::get('list', [ProductController::class,'index']);
     //Route::resource('products', ProductController::class);
+});
+
+// Route for invalid call
+Route::fallback(function(){
+    return response()->json([ 'success'=>'false','message' => 'Page not found.'], 404);
 });

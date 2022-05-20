@@ -11,40 +11,10 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Person;
 use App\Models\State;
 class RegisterController extends BaseController
-{
+{    
     /**
-     * Register api
-     *
-     * @return \Illuminate\Http\Response
-     */
-    /*
-    public function register(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email',
-            'password' => 'required',
-            'c_password' => 'required|same:password',
-        ]);
-   
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
-        }
-   
-        $input = $request->all();
-        $input['password'] = md5($input['password']);
-        $user = User::create($input);
-        $success['token'] =  $user->createToken('MyApp')->plainTextToken;
-        $success['name'] =  $user->name;
-   
-        return $this->sendResponse($success, 'User register successfully.');
-    }
-    */
-   
-    /**
-     * Login api
-     *
-     * @return \Illuminate\Http\Response
+     * Function name : login
+     * Purpose : It login user and return access token
      */
     public function login(Request $request)
     {      
@@ -75,38 +45,30 @@ class RegisterController extends BaseController
     {        
         try
         {
-          //  $request->user()->currentAccessToken()->delete();
+            $request->user()->currentAccessToken()->delete();
             return $this->sendResponse('', 'You are logged out successfully.');
         
         } 
         catch (\Exception $e) 
         {
             return $this->sendError($e->getMessage());
-        }      
-
+        }     
     } 
-     /**
-     * Author: user_detail
-     * Purpose : it returns details of currrent user     
-     */
-    public function user_detail(Request $request)
-    {  
-        // $validator = Validator::make($request->all(), [            
-        //     'person_id' => 'required',            
-        // ]);
-        // if($validator->fails()){
-        //     return $this->sendError('Validation Error.', $validator->errors());       
-        // }
 
-        // $person_id=$request->person_id;
-        //pr( );exit;
-        
+    /**
+     * Function name : user_detail
+     * Purpose : it returns details of currrent user     
+    */
+    public function error_page()
+    {
+        return $this->sendError('Invalid token.', []);        
+    }
+     public function user_detail(Request $request)
+    {   
         try
         {          
             $person_id=$request->user()->person_id;
-            //DB::enableQueryLog();                                                                                           
             $result=array();
-            //$result['address_detail']=array();
     
             $user_data = DB::table('login as l')
                 ->join('person as p', 'p.id', '=', 'l.person_id')        
@@ -139,9 +101,7 @@ class RegisterController extends BaseController
                         }
                     }
                 }
-                return $this->sendResponse($result, 'User details found.');                
-                // $query=DB::getQueryLog();
-                // pr($query);      
+                return $this->sendResponse($result, 'User details found.');  
             }
             else
             {
@@ -153,9 +113,32 @@ class RegisterController extends BaseController
             return $this->sendError($e->getMessage());
         }  
     }    
+    /**
+     * Register api
+     *
+     * @return \Illuminate\Http\Response
+     */
+    /*
+    public function register(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'email' => 'required|email',
+            'password' => 'required',
+            'c_password' => 'required|same:password',
+        ]);
+   
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors());       
+        }
+   
+        $input = $request->all();
+        $input['password'] = md5($input['password']);
+        $user = User::create($input);
+        $success['token'] =  $user->createToken('MyApp')->plainTextToken;
+        $success['name'] =  $user->name;
+   
+        return $this->sendResponse($success, 'User register successfully.');
+    }
+    */
 }
-/*
-question
-1)relationship
-2)manual query
-*/

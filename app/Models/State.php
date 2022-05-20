@@ -15,9 +15,5 @@ class State extends Model
     public function country()
     {
         return $this->belongsTo(Country::class);
-    }
-    // public function address()
-    // {
-    //     return $this->hasOne(Address::class,'address_id','id')->with("person_address");
-    // }
+    }    
 }
